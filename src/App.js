@@ -68,9 +68,9 @@ class App extends Component {
       hasError: false,
       errorMessage: ""
     });
-    if (action == 'add')
+    if (action === 'add')
       this.addMarker(data);
-    if (action == 'edit') {
+    if (action === 'edit') {
       data.itemId = markerToBeEdited;
       this.editMarker(data);
     }
@@ -175,8 +175,8 @@ class App extends Component {
         {/* add/edit marker dialog */}
         <Dialog open={openAddMarkerDialog} aria-labelledby="form-dialog-title">
           <DialogTitle id="form-dialog-title">
-            {action == 'add' && 'Add New Marker'}
-            {action == 'edit' && 'Update Existing Marker'}</DialogTitle>
+            {action === 'add' && 'Add New Marker'}
+            {action === 'edit' && 'Update Existing Marker'}</DialogTitle>
           <DialogContent>
             <DialogContentText>
               Please write address in the below text field to find its longitude and latitude.
@@ -200,8 +200,8 @@ class App extends Component {
               Cancel
             </Button>
             <Button onClick={this.handleAddMarkerRequest} color="primary">
-              {action == 'add' && 'Save'}
-              {action == 'edit' && 'Update'}
+              {action === 'add' && 'Save'}
+              {action === 'edit' && 'Update'}
             </Button>
           </DialogActions>
         </Dialog>
