@@ -1,34 +1,32 @@
 import React, { Component } from 'react';
 import { Map, GoogleApiWrapper, Marker } from 'google-maps-react';
+import Config from "../config";
 class map extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            stores: [{ lat: 47.49855629475769, lng: -122.14184416996333 },
-            { latitude: 47.359423, longitude: -122.021071 },
-            { latitude: 47.2052192687988, longitude: -121.988426208496 },
-            { latitude: 47.6307081, longitude: -122.1434325 },
-            { latitude: 47.3084488, longitude: -122.2140121 },
-            { latitude: 47.5524695, longitude: -122.0425407 }]
+            initialCenter: Config.initialCenter
         }
     }
     displayMarkers = () => {
-        return this.state.stores.map((store, index) => {
-            return <Marker key={index} id={index} title='Dhaka,Bangladesh' position={{
-                lat: store.latitude,
-                lng: store.longitude
-            }}
-                onClick={() => console.log("You clicked me!")} />
+        const { markers } = this.props;
+        debugger;
+        return markers.map((marker, index) => {
+            return <Marker key={index} id={index} title={marker.address} position={{
+                lat: marker.latitude,
+                lng: marker.longitude
+            }} />
         })
     }
 
     render() {
+        const { initialCenter } = this.state;
         return (
             <Map
                 google={this.props.google}
                 zoom={8}
                 style={style}
-                initialCenter={{ lat: 47.444, lng: -122.176 }}
+                initialCenter={initialCenter}
             >
                 {this.displayMarkers()}
             </Map>
@@ -37,10 +35,10 @@ class map extends Component {
 }
 
 const style = {
-    width: '500px',
-    height: '500px'
+    height: '500px',
+    position: 'relative'
 }
 
 export default GoogleApiWrapper({
-    apiKey: 'AIzaSyCj6Vc_eyZT18RZ8zPnRKhGDbX0EEUFGyk'
+    apiKey: Config.apiKey
 })(map);
