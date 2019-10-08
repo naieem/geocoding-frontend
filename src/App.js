@@ -49,7 +49,6 @@ class App extends Component {
       }
     });
   }
-
   handleAddMarkerDialog() {
     this.setState({
       openAddMarkerDialog: true,
@@ -76,6 +75,9 @@ class App extends Component {
       this.editMarker(data);
     }
   }
+  /**
+   * add marker handler
+   */
   addMarker(data) {
     axios.post(Config.baseUrl + 'addMarker', data).then((response) => {
       debugger;
@@ -93,6 +95,9 @@ class App extends Component {
       }
     });
   }
+  /**
+   * edit marker handler
+   */
   editMarker(data) {
     axios.post(Config.baseUrl + 'updateMarker', data).then((response) => {
       debugger;
@@ -110,6 +115,10 @@ class App extends Component {
   onDialogClose() {
     this.setState({ markerToBeDeleted: "", address: '', markerToBeEdited: "", action: '', openAddMarkerDialog: false, openDeleteMarkerDialog: false });
   }
+  /**
+   * delete marker handler
+   * payload (itemid)
+   */
   deleteMarker(id) {
     axios.post(Config.baseUrl + 'deleteMarker', { itemId: id }).then((response) => {
       if (response.data.status) {
@@ -122,6 +131,9 @@ class App extends Component {
       }
     });
   }
+  /**
+   * single marker display block
+   */
   listSingleMarkerData(data) {
     return (
       <Grid item xs={12} sm={3}>
