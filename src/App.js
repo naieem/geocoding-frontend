@@ -22,11 +22,13 @@ class App extends Component {
     this.state = {
       openAddMarkerDialog: false,
       openDeleteMarkerDialog: false,
+      action: "",
       address: "",
       errorMessage: "",
       hasError: false,
       markers: [],
       markerToBeDeleted: "",
+      markerToBeEdited: "",
       deleteErrorMsg: ""
     }
     this.handleAddMarkerDialog = this.handleAddMarkerDialog.bind(this);
@@ -50,20 +52,31 @@ class App extends Component {
 
   handleAddMarkerDialog() {
     this.setState({
-      openAddMarkerDialog: true
+      openAddMarkerDialog: true,
+      action: 'add',
+      address: ''
     });
   }
   handleAddressChange(event) {
     this.setState({ address: event.target.value });
   }
   handleAddMarkerRequest() {
+    const { action, address, markerToBeEdited } = this.state;
     let data = {
-      address: this.state.address
+      address: address
     }
     this.setState({
       hasError: false,
       errorMessage: ""
     });
+    if (action == 'add')
+      this.addMarker(data);
+    if (action == 'edit') {
+      data.itemId = markerToBeEdited;
+      this.editMarker(data);
+    }
+  }
+  addMarker(data) {
     axios.post(Config.baseUrl + 'addMarker', data).then((response) => {
       debugger;
       if (!response.data.status) {
@@ -80,19 +93,27 @@ class App extends Component {
       }
     });
   }
+  editMarker(data) {
+    axios.post(Config.baseUrl + 'updateMarker', data).then((response) => {
+      debugger;
+      if (!response.data.status) {
+        this.setState({
+          hasError: true,
+          errorMessage: response.data.errorMessage
+        });
+      } else {
+        this.onDialogClose();
+        this.getAllMarker();
+      }
+    });
+  }
   onDialogClose() {
-    this.setState({ openAddMarkerDialog: false, openDeleteMarkerDialog: false });
+    this.setState({ markerToBeDeleted: "", address: '', markerToBeEdited: "", action: '', openAddMarkerDialog: false, openDeleteMarkerDialog: false });
   }
   deleteMarker(id) {
-    // this.setState({
-    //   deleteErrorMsg:''
-    // });
     axios.post(Config.baseUrl + 'deleteMarker', { itemId: id }).then((response) => {
       if (response.data.status) {
-        this.setState({
-          openDeleteMarkerDialog: false,
-          markerToBeDeleted: ""
-        });
+        this.onDialogClose();
         this.getAllMarker();
       } else {
         this.setState({
@@ -109,15 +130,15 @@ class App extends Component {
             <Typography variant="h5" gutterBottom>
               {data.address}
             </Typography>
-            <Typography variant="h5" color="textSecondary" component="h2">
+            <Typography variant="p" color="textSecondary" component="p">
               Latitude: {data.latitude}
             </Typography>
-            <Typography variant="h5" color="textSecondary" component="h2">
+            <Typography variant="p" color="textSecondary" component="p">
               Longitude: {data.longitude}
             </Typography>
           </CardContent>
           <CardActions>
-            <Button size="small" variant="outlined">Edit</Button>
+            <Button size="small" variant="outlined" onClick={() => this.setState({ markerToBeEdited: data._id, action: 'edit', openAddMarkerDialog: true, address: data.address })}>Edit</Button>
             <Button size="small" variant="outlined" onClick={() => this.setState({ markerToBeDeleted: data._id, openDeleteMarkerDialog: true })}>Delete</Button>
           </CardActions>
         </Card>
@@ -125,7 +146,7 @@ class App extends Component {
     );
   }
   render() {
-    const { openAddMarkerDialog, openDeleteMarkerDialog, deleteErrorMsg, hasError, errorMessage, markers, markerToBeDeleted } = this.state;
+    const { openAddMarkerDialog, action, address, openDeleteMarkerDialog, deleteErrorMsg, hasError, errorMessage, markers, markerToBeDeleted } = this.state;
     return (
       <div className="App">
         <Map markers={markers}></Map>
@@ -133,15 +154,17 @@ class App extends Component {
           <Button variant="contained" color="primary" onClick={this.handleAddMarkerDialog}>
             Add new
           </Button>
-          <Grid container spacing={2} style={{ marginTop: 20,width:'100%' }}>
+          <Grid container spacing={2} style={{ marginTop: 20, width: '100%' }}>
             {markers.length > 0 && markers.map((marker) =>
               this.listSingleMarkerData(marker)
             )}
           </Grid>
         </div>
-        {/* add marker dialog */}
+        {/* add/edit marker dialog */}
         <Dialog open={openAddMarkerDialog} aria-labelledby="form-dialog-title">
-          <DialogTitle id="form-dialog-title">Add New Marker</DialogTitle>
+          <DialogTitle id="form-dialog-title">
+            {action == 'add' && 'Add New Marker'}
+            {action == 'edit' && 'Update Existing Marker'}</DialogTitle>
           <DialogContent>
             <DialogContentText>
               Please write address in the below text field to find its longitude and latitude.
@@ -153,6 +176,7 @@ class App extends Component {
               autoFocus
               margin="dense"
               id="address"
+              value={address}
               label="Address"
               type="text"
               onChange={this.handleAddressChange}
@@ -164,7 +188,8 @@ class App extends Component {
               Cancel
             </Button>
             <Button onClick={this.handleAddMarkerRequest} color="primary">
-              Save
+              {action == 'add' && 'Save'}
+              {action == 'edit' && 'Update'}
             </Button>
           </DialogActions>
         </Dialog>

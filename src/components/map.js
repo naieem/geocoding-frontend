@@ -24,7 +24,7 @@ class map extends Component {
         return (
             <Map
                 google={this.props.google}
-                zoom={8}
+                zoom={6}
                 style={style}
                 initialCenter={initialCenter}
             >
