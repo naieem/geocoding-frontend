@@ -183,7 +183,7 @@ class App extends Component {
     );
   }
   render() {
-    const { openAddMarkerDialog, action, address, openDeleteMarkerDialog, deleteErrorMsg, hasError, errorMessage, markers, markerToBeDeleted } = this.state;
+    const { openAddMarkerDialog, action, address, openDeleteMarkerDialog, hasError, errorMessage, markers, markerToBeDeleted } = this.state;
     return (
       <div className="App">
         <Map markers={markers}></Map>
@@ -224,7 +224,7 @@ class App extends Component {
             <Button onClick={this.onDialogClose} color="primary">
               Cancel
             </Button>
-            <Button onClick={this.handleAddMarkerRequest} color="primary" className={action == "add"? "addBtn" : (action == "edit"? "editBtn": "")}>
+            <Button onClick={this.handleAddMarkerRequest} color="primary" className={action === "add"? "addBtn" : (action === "edit"? "editBtn": "")}>
               {action === 'add' && 'Save'}
               {action === 'edit' && 'Update'}
             </Button>
