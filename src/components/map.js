@@ -26,6 +26,7 @@ class map extends Component {
                 google={this.props.google}
                 zoom={6}
                 style={style}
+                className="geocodeMap"
                 initialCenter={initialCenter}
             >
                 {this.displayMarkers()}

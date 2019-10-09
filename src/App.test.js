@@ -6,7 +6,6 @@ import {
   mount
 } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
-import sinon from 'sinon';
 import App from './App';
 import Map from "./components/map";
 
@@ -14,32 +13,24 @@ configure({
   adapter: new Adapter()
 });
 
-// describe('Check if the whole DOM runs or not', () => {
-//   it('renders without crashing', () => {
-//     const div = document.createElement('div');
-//     ReactDOM.render(<App />, div);
-//     ReactDOM.unmountComponentAtNode(div);
-//   });
-// });
-
 describe('<App />', () => {
   it('renders single Map components', () => {
-    const wrapper = shallow( < App / > );
-    expect(wrapper.find(Map)).toHaveLength(1);
+    const component = shallow(<App />);
+    expect(component.find(Map)).toHaveLength(1);
   });
 });
 
 describe('instance test', () => {
   it('testing instance', () => {
-    const wrapper = mount( < App / > );
-    const instance = wrapper.instance();
+    const component = mount(<App />);
+    const instance = component.instance();
     expect(instance).toBeInstanceOf(App)
   });
 });
 
 describe('State', () => {
   it('Testing State value', () => {
-    const component = mount( < App / > );
+    const component = mount(<App />);
     expect(component.state().hasError).toBeFalsy();
     component.setState({
       hasError: true
@@ -50,7 +41,7 @@ describe('State', () => {
 
 describe('Add Button', () => {
   it('To check if add marker button click is rendering the dom correctly', () => {
-    const component = mount( < App / > );
+    const component = mount(<App />);
     expect(component.find('button.addBtn')).toHaveLength(0);
     component.find("button.addNewMarker").simulate('click');
     expect(component.state().action).toBe("add");
@@ -60,7 +51,7 @@ describe('Add Button', () => {
 
 describe('Edit Button', () => {
   it('To check if edit marker button click is rendering the dom correctly', () => {
-    const component = mount( < App / > );
+    const component = mount(<App />);
     expect(component.find('button.editBtn')).toHaveLength(0);
     if (component.find("button.editMarker").length > 0) {
       component.find("button.editMarker").first().simulate('click');
@@ -73,20 +64,20 @@ describe('Edit Button', () => {
 
 describe('Add/Delete Marker DB Call', () => {
   it('To test DB call after add new Marker and then deleting the marker also', () => {
-      const component = mount( < App / > );
-      const instance = component.instance();
-      expect(component.find('button.addBtn')).toHaveLength(0);
-      component.find("button.addNewMarker").simulate('click');
-      expect(component.state().action).toBe("add");
-      expect(component.find('button.addBtn')).toHaveLength(1);
-      let data = {
-        address: "comilla"
-      };
+    const component = mount(<App />);
+    const instance = component.instance();
+    expect(component.find('button.addBtn')).toHaveLength(0);
+    component.find("button.addNewMarker").simulate('click');
+    expect(component.state().action).toBe("add");
+    expect(component.find('button.addBtn')).toHaveLength(1);
+    let data = {
+      address: "comilla"
+    };
     return instance.addMarker(data).then((response) => {
       expect(response).toBeDefined();
       expect(response.status).toBeTruthy();
       expect(response.itemId).toBeDefined();
-      return instance.deleteMarker(response.itemId).then((res)=>{
+      return instance.deleteMarker(response.itemId).then((res) => {
         expect(res).toBeTruthy();
       });
     });
