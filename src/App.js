@@ -36,8 +36,8 @@ class App extends Component {
     this.handleAddMarkerRequest = this.handleAddMarkerRequest.bind(this);
     this.onDialogClose = this.onDialogClose.bind(this);
     this.listSingleMarkerData = this.listSingleMarkerData.bind(this);
-    // this.addMarker=this.addMarker.bind(this);
-    this.test=this.test.bind(this);
+    this.addMarker=this.addMarker.bind(this);
+    this.deleteMarker=this.deleteMarker.bind(this);
   }
   test(){
     return new Promise((resolve)=>{
@@ -97,20 +97,23 @@ class App extends Component {
    * add marker handler
    */
   addMarker(data) {
-    axios.post(Config.baseUrl + 'addMarker', data).then((response) => {
-      if (!response.data.status) {
-        this.setState({
-          hasError: true,
-          errorMessage: response.data.errorMessage.errmsg
-        });
-      } else {
-        this.setState({
-          address: '',
-          openAddMarkerDialog: false
-        });
-        this.getAllMarker();
-      }
-      return response;
+    return new Promise((resolve)=>{
+      axios.post(Config.baseUrl + 'addMarker', data).then((response) => {
+        if (!response.data.status) {
+          this.setState({
+            hasError: true,
+            errorMessage: response.data.errorMessage.errmsg
+          });
+          resolve(false);
+        } else {
+          this.setState({
+            address: '',
+            openAddMarkerDialog: false
+          });
+          resolve(response.data);
+          this.getAllMarker();
+        }
+      });
     });
   }
   /**
@@ -138,15 +141,19 @@ class App extends Component {
    * payload (itemid)
    */
   deleteMarker(id) {
-    axios.post(Config.baseUrl + 'deleteMarker', { itemId: id }).then((response) => {
-      if (response.data.status) {
-        this.onDialogClose();
-        this.getAllMarker();
-      } else {
-        this.setState({
-          deleteErrorMsg: response.data.errorMessage
-        });
-      }
+    return new Promise((resolve)=>{
+      axios.post(Config.baseUrl + 'deleteMarker', { itemId: id }).then((response) => {
+        if (response.data.status) {
+          this.onDialogClose();
+          this.getAllMarker();
+          resolve(true);
+        } else {
+          this.setState({
+            deleteErrorMsg: response.data.errorMessage
+          });
+          resolve(false);
+        }
+      });
     });
   }
   /**
