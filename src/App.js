@@ -40,6 +40,9 @@ class App extends Component {
   componentDidMount() {
     this.getAllMarker();
   }
+  /**
+   * get all market list
+   */
   getAllMarker() {
     axios.get(Config.baseUrl + 'allMarker').then((response) => {
       if (response.data.status) {
@@ -49,6 +52,9 @@ class App extends Component {
       }
     });
   }
+  /**
+   * add market dialog hander
+   */
   handleAddMarkerDialog() {
     this.setState({
       openAddMarkerDialog: true,
@@ -59,6 +65,9 @@ class App extends Component {
   handleAddressChange(event) {
     this.setState({ address: event.target.value });
   }
+  /**
+   * add/edit market request handler
+   */
   handleAddMarkerRequest() {
     const { action, address, markerToBeEdited } = this.state;
     let data = {
