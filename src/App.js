@@ -36,6 +36,15 @@ class App extends Component {
     this.handleAddMarkerRequest = this.handleAddMarkerRequest.bind(this);
     this.onDialogClose = this.onDialogClose.bind(this);
     this.listSingleMarkerData = this.listSingleMarkerData.bind(this);
+    // this.addMarker=this.addMarker.bind(this);
+    this.test=this.test.bind(this);
+  }
+  test(){
+    return new Promise((resolve)=>{
+      setTimeout(() => {
+        resolve("hello");
+      }, 4000);
+    });
   }
   componentDidMount() {
     this.getAllMarker();
@@ -89,7 +98,6 @@ class App extends Component {
    */
   addMarker(data) {
     axios.post(Config.baseUrl + 'addMarker', data).then((response) => {
-      
       if (!response.data.status) {
         this.setState({
           hasError: true,
@@ -102,6 +110,7 @@ class App extends Component {
         });
         this.getAllMarker();
       }
+      return response;
     });
   }
   /**
@@ -145,21 +154,21 @@ class App extends Component {
    */
   listSingleMarkerData(data) {
     return (
-      <Grid item xs={12} sm={3}>
+      <Grid item xs={12} sm={3} key={data._id}>
         <Card>
           <CardContent>
             <Typography variant="h5" gutterBottom>
               {data.address}
             </Typography>
-            <Typography variant="p" color="textSecondary" component="p">
+            <Typography variant="body1" color="textSecondary" component="p">
               Latitude: {data.latitude}
             </Typography>
-            <Typography variant="p" color="textSecondary" component="p">
+            <Typography variant="body1" color="textSecondary" component="p">
               Longitude: {data.longitude}
             </Typography>
           </CardContent>
           <CardActions>
-            <Button size="small" variant="outlined" onClick={() => this.setState({ markerToBeEdited: data._id, action: 'edit', openAddMarkerDialog: true, address: data.address })}>Edit</Button>
+            <Button size="small" variant="outlined" className="editMarker" onClick={() => this.setState({ markerToBeEdited: data._id, action: 'edit', openAddMarkerDialog: true, address: data.address })}>Edit</Button>
             <Button size="small" variant="outlined" onClick={() => this.setState({ markerToBeDeleted: data._id, openDeleteMarkerDialog: true })}>Delete</Button>
           </CardActions>
         </Card>
@@ -172,7 +181,7 @@ class App extends Component {
       <div className="App">
         <Map markers={markers}></Map>
         <div className="container">
-          <Button variant="contained" color="primary" onClick={this.handleAddMarkerDialog}>
+          <Button variant="contained" color="primary" className="addNewMarker" onClick={this.handleAddMarkerDialog}>
             Add new
           </Button>
           <Grid container spacing={2} style={{ marginTop: 20, width: '100%' }}>
@@ -208,7 +217,7 @@ class App extends Component {
             <Button onClick={this.onDialogClose} color="primary">
               Cancel
             </Button>
-            <Button onClick={this.handleAddMarkerRequest} color="primary">
+            <Button onClick={this.handleAddMarkerRequest} color="primary" className={action == "add"? "addBtn" : (action == "edit"? "editBtn": "")}>
               {action === 'add' && 'Save'}
               {action === 'edit' && 'Update'}
             </Button>
