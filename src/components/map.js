@@ -10,7 +10,7 @@ class map extends Component {
     }
     displayMarkers = () => {
         const { markers } = this.props;
-        debugger;
+        
         return markers.map((marker, index) => {
             return <Marker key={index} id={index} title={marker.address} position={{
                 lat: marker.latitude,

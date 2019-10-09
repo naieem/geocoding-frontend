@@ -80,11 +80,11 @@ class App extends Component {
    */
   addMarker(data) {
     axios.post(Config.baseUrl + 'addMarker', data).then((response) => {
-      debugger;
+      
       if (!response.data.status) {
         this.setState({
           hasError: true,
-          errorMessage: response.data.errorMessage
+          errorMessage: response.data.errorMessage.errmsg
         });
       } else {
         this.setState({
@@ -100,7 +100,7 @@ class App extends Component {
    */
   editMarker(data) {
     axios.post(Config.baseUrl + 'updateMarker', data).then((response) => {
-      debugger;
+      
       if (!response.data.status) {
         this.setState({
           hasError: true,
